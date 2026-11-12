@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="手机出货">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#14335e">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/lxgwwenkai-regular.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/lxgwwenkai-bold.css">
+<title>中国手机出货在线版</title>
+<style>
+  :root{--blue:#1f4e8c;--blue2:#4a78b5;--blue3:#c9d8ec;--ink:#1d2733;--sub:#55606d;--muted:#8a94a0;--line:#d5dbe3;--neg:#b5523b;--grey:#b9c0c8;--bg:#eef1f5;--card:#fff}
+  body.dark{--blue:#7fb0ea;--blue2:#5f93d3;--blue3:#3b5679;--ink:#e3e8ee;--sub:#aeb8c4;--muted:#808b97;--line:#323d4a;--neg:#e58a6f;--grey:#5d6773;--bg:#11161c;--card:#1a2129}
+  .mode{position:absolute;top:0;right:0;font:inherit;font-size:14px;background:none;color:var(--sub);border:1px solid var(--line);padding:4px 12px;cursor:pointer}
+  .mode:hover{color:var(--blue);border-color:var(--blue2)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Kaiti SC","STKaiti","KaiTi","楷体","LXGW WenKai",serif}
+  .page{position:relative;max-width:none;margin:0;min-height:100vh;background:var(--card);padding:28px clamp(16px,3vw,56px) 24px}
+  .hd{position:relative;padding-right:110px}
+  h1{margin:0;font-size:30px;color:var(--blue);font-weight:700;line-height:1.35}
+  .meta{margin:8px 0 0;font-size:13px;color:var(--muted)}
+  .tabs{display:flex;gap:0;margin:20px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tabs button{font:inherit;font-size:17px;background:none;border:0;border-bottom:3px solid transparent;padding:10px 18px;color:var(--sub);cursor:pointer}
+  .tabs button.on{color:var(--blue);border-bottom-color:var(--blue);font-weight:700}
+  .tab{display:none;padding-top:8px}.tab.on{display:block}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:18px 0 6px}
+  .kpi{padding:14px 16px;border-right:1px solid var(--line)}.kpi:last-child{border-right:0}
+  .kpi .l{font-size:14px;color:var(--sub)}.kpi .v{font-size:30px;color:var(--blue);font-weight:700;margin-top:4px}.kpi .d{font-size:15px;margin-top:2px}
+  .story{list-style:none;margin:14px 0 0;padding:0}
+  .story li{display:flex;gap:12px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);font-size:18px;line-height:1.5}
+  .story li a{flex:none;font-size:13px;color:var(--blue2);cursor:pointer;text-decoration:none;border:1px solid var(--blue3);padding:1px 8px}
+  .blk{padding:20px 0 18px;border-bottom:1px solid var(--line)}.blk:last-child{border-bottom:0}
+  .blk h3{margin:0;font-size:21px;color:var(--ink);font-weight:700;line-height:1.45}
+  .blk h3 .tag{font-size:13px;color:var(--muted);font-weight:400;margin-left:8px}
+  .cap{font-size:13px;color:var(--muted);margin:6px 0 0;line-height:1.6}
+  .neg{color:var(--neg)}.pos{color:var(--blue)}
+  .legend{font-size:13px;color:var(--sub);margin:8px 0 0}.legend span{margin-right:16px}.legend em{display:inline-block;width:12px;height:12px;margin-right:4px;vertical-align:-1px}
+  table{border-collapse:collapse;width:100%;margin-top:10px}
+  td,th{padding:7px 6px;border-bottom:1px solid var(--line);font-size:15px;white-space:nowrap;text-align:right}
+  th{color:var(--sub);font-weight:400;border-bottom:1px solid var(--blue2)}
+  td:first-child,th:first-child{text-align:left}
+  td.l,th.l{text-align:left;white-space:normal}
+  .src{color:var(--muted);font-size:13px}
+  .err{color:var(--neg)}
+  .foot{margin-top:18px;padding-top:10px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);line-height:1.7}
+  details.note{margin:6px 0 0}
+  details.note>summary{font-size:13px;color:var(--blue2);cursor:pointer;list-style:none;user-select:none;display:inline-block}
+  details.note>summary::-webkit-details-marker{display:none}
+  details.note>summary:before{content:'▸ '}details.note[open]>summary:before{content:'▾ '}
+  details.note>.cap{margin-top:4px}
+  .method{margin:12px 0 0;padding-left:24px;font-size:15.5px;line-height:1.8;color:var(--ink)}.method b{color:var(--blue)}
+  .eg{font-size:15px;line-height:1.7;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:8px 0;margin:12px 0 0}
+  .ptab td,.ptab th{font-size:13.5px}.ptab{margin-bottom:8px}.ptitle{font-size:14px;color:var(--sub);margin:14px 0 0}
+  svg text{font-family:"Kaiti SC","STKaiti","KaiTi","楷体","LXGW WenKai",serif}
+  @media (max-width:760px){.page{padding:20px 16px}.kpis{grid-template-columns:repeat(2,1fr)}.kpi:nth-child(2){border-right:0}h1{font-size:24px}.tabs button{padding:8px 10px;font-size:15px}}
+</style>
+<style>
+  :root{--soft:#f3f6fa}body.dark{--soft:#212a35}
+  .page{padding-top:0}
+  .hd{padding:28px 130px 16px 0}
+  .eyebrow{margin:0 0 8px;font-size:13px;letter-spacing:.14em;color:var(--blue2)}
+  h1{font-size:32px;letter-spacing:.01em}
+  .mode{top:28px}
+  .warn{margin:8px 0 0;font-size:13px;color:var(--neg)}.warn:empty{display:none}
+  .tabs{position:sticky;top:0;z-index:5;background:var(--card);margin:4px 0 0;border-bottom:0;box-shadow:0 1px 0 var(--line)}
+  .tabs button{padding:13px 22px;font-size:17px;transition:color .15s}
+  .tabs button:hover{color:var(--blue)}
+  .kpis{margin:24px 0 12px;border-top:2px solid var(--blue);border-bottom:1px solid var(--line);background:var(--soft)}
+  .kpi{padding:18px 22px}.kpi .l{letter-spacing:.04em}.kpi .v{font-size:34px;margin-top:6px}.kpi .d{margin-top:4px}
+  .story{counter-reset:st;margin-top:18px}
+  .story li{padding:13px 10px;transition:background .15s}
+  .story li:before{counter-increment:st;content:counter(st,decimal-leading-zero);flex:none;width:28px;font-size:13px;color:var(--blue2)}
+  .story li:hover{background:var(--soft)}
+  .story li a{padding:2px 10px;transition:all .15s}.story li a:hover{background:var(--blue);border-color:var(--blue);color:var(--card)}
+  .tab{counter-reset:blk}
+  .blk{padding:28px 0 24px}
+  .blk h3{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 12px;font-size:22px}
+  .blk h3:before{counter-increment:blk;content:counter(blk,decimal-leading-zero);font-size:13px;font-weight:400;color:var(--blue2);border:1px solid var(--blue3);padding:0 6px;line-height:1.7;position:relative;top:-2px}
+  .blk h3 .tag{flex-basis:100%;margin:4px 0 0;font-size:13.5px}
+  .blk>div[id]>svg{margin-top:12px}
+  th{background:var(--soft);font-weight:700;padding:9px 8px}
+  td{padding:8px;font-variant-numeric:tabular-nums}
+  tr:hover td{background:var(--soft)}
+  details.foot{margin-top:24px;padding-top:12px}
+  @media (min-width:1760px){#t-cn.on,#t-pr.on,#t-co.on,#t-hm.on,#t-gl.on{display:grid;grid-template-columns:1fr 1fr;column-gap:64px}.blk.full{grid-column:1/-1}}
+</style>
+<style>
+  
+  :root{--px:clamp(18px,3.2vw,60px);--bg:#eef2f7;--soft:#f5f8fc;--hero1:#14335e;--hero2:#1f4e8c;--heroT:#ffffff;--heroS:#b9cde8}
+  body.dark{--bg:#0d1117;--soft:#1f2832;--hero1:#0b1a30;--hero2:#15325a;--heroT:#e9eff6;--heroS:#8ea8c8}
+  body{background:var(--bg)}
+  .page{background:var(--bg);padding:0 var(--px) 32px}
+  .hd{margin:0 calc(-1*var(--px));padding:34px calc(var(--px) + 140px) 30px var(--px);background:linear-gradient(115deg,var(--hero1) 0%,var(--hero2) 70%,#2c64a8 100%);color:var(--heroT);position:relative;overflow:hidden}
+  .hd:after{content:'';position:absolute;right:-60px;top:-60px;width:360px;height:360px;border:1px solid rgba(255,255,255,.10);transform:rotate(45deg)}
+  .hd:before{content:'';position:absolute;right:120px;bottom:-140px;width:260px;height:260px;border:1px solid rgba(255,255,255,.07);transform:rotate(45deg)}
+  .eyebrow{color:var(--heroS);letter-spacing:.22em;font-size:13px;margin:0 0 10px}
+  h1{color:var(--heroT);font-size:34px;line-height:1.35;text-wrap:balance}
+  .story li span{text-wrap:balance}.blk h3,.cap,.method li{text-wrap:pretty}
+  .hd .meta{color:var(--heroS);margin-top:10px}
+  .hd .warn{color:#ffc4b0}
+  .mode{top:34px;right:var(--px);color:var(--heroT);border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.06);z-index:2}
+  .mode:hover{color:var(--hero1);background:var(--heroT);border-color:var(--heroT)}
+  .tabs{margin:0 calc(-1*var(--px));padding:0 var(--px);background:var(--card);box-shadow:0 1px 0 var(--line),0 6px 18px rgba(20,51,94,.06)}
+  .tabs button{padding:15px 22px;font-size:17px;letter-spacing:.04em}
+  .tabs button.on{border-bottom-width:3px}
+  .tab{padding-top:22px}
+  
+  .kpis{margin:0 0 20px;border:1px solid var(--line);border-top:3px solid var(--blue);background:var(--card)}
+  .kpi{padding:22px 26px 20px}
+  .kpi .l{font-size:14px;color:var(--sub)}
+  .kpi .v{font-size:40px;line-height:1.2;margin-top:8px;font-variant-numeric:tabular-nums}
+  .kpi .d{display:inline-block;margin-top:10px;font-size:14px;padding:2px 10px;background:var(--soft)}
+  .kpi .d.neg{background:rgba(181,82,59,.10)}.kpi .d.pos{background:rgba(31,78,140,.10)}
+  .story{display:grid;grid-template-columns:repeat(auto-fit,minmax(520px,1fr));gap:12px;margin:0}
+  .story li{background:var(--card);border:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 20px;align-items:center;font-size:17.5px}
+  .story li:before{width:44px;font-size:24px;color:var(--blue3);font-weight:700}
+  body.dark .story li:before{color:var(--blue2)}
+  .story li:hover{background:var(--card);border-color:var(--blue2)}
+  
+  .blk{background:var(--card);border:1px solid var(--line);padding:24px 30px 20px;margin:0 0 18px}
+  .blk:last-child{border-bottom:1px solid var(--line)}
+  .blk h3{font-size:23px;gap:2px 12px}
+  .blk h3 .tag{order:-1;flex-basis:100%;margin:0 0 6px;font-size:12.5px;letter-spacing:.12em;color:var(--blue2)}
+  .blk h3:before{background:var(--blue);color:var(--card);border-color:var(--blue);font-size:12.5px;padding:0 7px}
+  body.dark .blk h3:before{color:var(--hero1)}
+  .legend{margin-top:12px}
+  details.note{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+  details.note>summary{font-size:13px}
+  .method{background:var(--soft);padding:16px 20px 16px 44px;border:1px solid var(--line)}
+  .eg{border:0;border-left:0;background:none;padding:12px 0 0}
+  table{border:1px solid var(--line)}
+  th{background:var(--soft);color:var(--sub);letter-spacing:.03em;border-bottom:2px solid var(--blue)}
+  details.foot{margin:6px 0 0;border-top:0;padding:14px 0 0}
+  @media (min-width:1760px){#t-cn.on,#t-pr.on,#t-co.on,#t-hm.on,#t-gl.on{column-gap:18px}}
+  @media (max-width:760px){.hd{padding:24px var(--px) 22px}.hd:after,.hd:before{display:none}h1{font-size:24px}.mode{position:static;margin-top:12px}.story{grid-template-columns:1fr}.blk{padding:18px 16px}.kpi .v{font-size:30px}}
+  
+  @media (max-width:760px){
+    .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+    .tabs button{flex:none;padding:12px 14px;font-size:16px}
+    .kpis{grid-template-columns:1fr}.kpi{border-right:0;border-bottom:1px solid var(--line);padding:16px 18px}.kpi:last-child{border-bottom:0}
+    .kpi .v{font-size:30px;white-space:nowrap}
+    .blk>div[id]{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .blk>div[id]>svg{min-width:720px}
+    .blk h3{font-size:19px}
+    table{display:block;overflow-x:auto}
+    .story li{font-size:16px;padding:14px 14px}
+  }
+  @media (display-mode:standalone){.hd{padding-top:calc(24px + env(safe-area-inset-top))!important}.mode{top:calc(24px + env(safe-area-inset-top))}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hd">
+  <p class="eyebrow">中国智能手机出货分析｜IDC</p>
+  <h1 id="title">中国智能手机出货</h1>
+  <p class="meta" id="meta">正在读取 IDC 数据…</p>
+  <p class="warn" id="warn"></p>
+  <button class="mode" id="mode" title="切换浅色／深色">深色模式</button>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button data-t="ov" class="on">总览</button>
+    <button data-t="cn">中国市场</button>
+    <button data-t="pr">价格段</button>
+    <button data-t="co">成本</button>
+    <button data-t="hm">鸿蒙</button>
+    <button data-t="gl">海外与全球</button>
+    <button data-t="dt">数据明细</button>
+  </div>
+
+  <section class="tab on" id="t-ov">
+    <div class="kpis" id="kpis"></div>
+    <ul class="story" id="story"></ul>
+  </section>
+
+  <section class="tab" id="t-cn">
+    <div class="blk"><h3 id="cn1h"></h3><div id="cn1"></div><p class="cap" id="cn1c"></p></div>
+    <div class="blk"><h3 id="cn2h"></h3><div id="cn2"></div><p class="cap" id="cn2c"></p></div>
+    <div class="blk"><h3 id="cn3h"></h3><div id="cn3"></div><p class="cap" id="cn3c"></p></div>
+    <div class="blk"><h3 id="cn4h"></h3><div id="cn4"></div><p class="legend"><span><em data-c="blue" style="background:#1f4e8c"></em>出货份额（IDC，今年累计）</span><span><em data-c="neg" style="background:#b5523b"></em>活跃设备份额（QuestMobile，现有用户）</span><span><em data-c="est" style="background:#e7b8a9"></em>推算</span></p><p class="cap" id="cn4c"></p></div>
+  </section>
+
+  <section class="tab" id="t-pr">
+    <div class="blk full"><h3 id="pr1h"></h3><div id="pr1"></div><p class="cap" id="pr1c"></p></div>
+    <div class="blk"><h3 id="pr2h"></h3><div id="pr2"></div><p class="legend"><span><em data-c="blue3" style="background:#c9d8ec"></em>去年同季</span><span><em data-c="blue" style="background:#1f4e8c"></em>本季</span></p><p class="cap" id="pr2c"></p></div>
+    <div class="blk"><h3 id="pr3h"></h3><div id="pr3"></div><p class="cap" id="pr3c"></p></div>
+  </section>
+
+  <section class="tab" id="t-co">
+    <div class="blk full"><h3 id="co1h"></h3><div id="co1"></div><p class="cap" id="co1c"></p></div>
+    <div class="blk"><h3 id="co2h"></h3><div id="co2"></div><p class="legend"><span><em data-c="blue3" style="background:#c9d8ec"></em>2025 年</span><span><em data-c="blue" style="background:#1f4e8c"></em>2026 年</span></p><p class="cap" id="co2c"></p></div>
+    <div class="blk"><h3 id="co3h"></h3><div id="co3"></div><p class="cap" id="co3c"></p></div>
+    <div class="blk full"><h3>计算方法：单台 BOM = 内存 + 闪存 + 其他元件，再按各厂商出货结构加权<span class="tag">估算，非厂商采购价</span></h3>
+      <ol class="method">
+        <li><b>按价格段设定代表机</b>：IDC 六个价格段（&lt;150、150—300、300—500、500—700、700—1000、≥1000 美元）各设一台代表机的内存容量、闪存容量和其他元件成本。小米、OPPO、vivo、荣耀共用一套安卓配置（例：150—300 美元段为 8GB 内存、约 220GB 闪存，对应 Redmi Note、vivo Y、OPPO A、荣耀 X）；Apple 单独一套；华为（含智选）按畅享、nova、Mate/Pura、折叠四个系列的实际配置</li>
+        <li><b>内存成本 = 内存容量（GB）× 全年有效单价</b>：按月计算采购价 = 手机内存季度合约价（群智、TrendForce，美元/GB）× 当月汇率 × 采购系数；当月消耗的是“库存月数”之前买入的货，2026 年初先消耗按 2025 年 9 月价格备下的囤货；12 个月平均得到全年有效单价</li>
+        <li><b>闪存成本 = 闪存容量 ÷ 256 × 256GB 闪存单价 × 规格系数 × 容量折扣</b>：单价按同样方法逐月折算；规格系数区分 eMMC、UFS3.1、UFS4（0.85—1.18），512GB 以上每 GB 略便宜</li>
+        <li><b>其他元件</b>：处理器、屏幕、摄像头、电池、射频、结构件、组装等按价格段取值，参照公开拆机估值；两年配置固定，2026 年按公开价格证据分项调价：屏幕 −10%—−15%（CINNO：柔性 OLED 手机面板均价同比 −17%），芯片华为 +5%、安卓低端 +1%／中端 +3%／高端 +6%—8%（高通 9 月分级涨价、台积电先进制程涨价）、Apple +3%，电池 +10%，PCB +10%，电容等被动元件 +8%，组装 +2%，摄像头、射频、结构件持平；合计各价格段约 −0.1%—+1.6%</li>
+        <li><b>厂商单台 BOM = Σ（各价格段代表机 BOM × 该厂商 2025 年该价格段出货占比）</b>：权重来自 IDC；2025、2026 年用同一权重和配置，只反映价格变化，不含结构升级</li>
+        <li><b>低／中／高情景</b>：库存 3／2／1 个月，囤货 3／1／0 个月，采购系数取低／中／高值，其他元件再整体 −3%／0／+3%</li>
+      </ol>
+      <p class="eg">示例｜小米 150—300 美元段，中情景：内存 129 → 413 元，闪存 122 → 263 元，其他元件 880 → 883 元，合计 1,131 → 1,558 元（+38%）；六个价格段按小米 2025 年出货结构加权，得到 1,521 → 2,056 元（+35%）</p>
+      <details class="note"><summary>参数表：存储合约价、采购系数、价格段配置</summary>
+        <p class="ptitle">手机存储季度合约价（全球市场价，美元；2026Q4 为预测）</p>
+        <table class="ptab"><tr><th>季度</th><th>LPDDR4X／GB</th><th>LPDDR5X／GB</th><th>UFS3.1 256GB／颗</th><th>美元兑人民币</th></tr>
+          <tr><td>2025Q1</td><td>1.85</td><td>2.30</td><td>19.5</td><td>7.18</td></tr><tr><td>2025Q3</td><td>2.66</td><td>2.59</td><td>20.6</td><td>7.14</td></tr>
+          <tr><td>2025Q4</td><td>3.06</td><td>3.75</td><td>22.3</td><td>7.09</td></tr><tr><td>2026Q1</td><td>5.60</td><td>6.43</td><td>31.0</td><td>6.95</td></tr>
+          <tr><td>2026Q2</td><td>9.60</td><td>12.16</td><td>62.7</td><td>6.86</td></tr><tr><td>2026Q3</td><td>10.40</td><td>12.80</td><td>69.6</td><td>6.78</td></tr>
+          <tr><td>2026Q4（预测）</td><td>10.70</td><td>13.20</td><td>74.5</td><td>6.72</td></tr></table>
+        <p class="ptitle">采购系数（采购价 ÷ 市场合约价；中情景，括号内为低—高）与全年有效单价（国产安卓，中情景）</p>
+        <table class="ptab"><tr><th>采购方</th><th>2025 年</th><th>2026 上半年</th><th>2026 下半年</th><th class="l">依据</th></tr>
+          <tr><td>华为（含智选）</td><td>0.95</td><td>0.85（0.80—0.95）</td><td>0.95（0.90—1.00）</td><td class="l">长鑫、长江存储为主，2025 年涨价晚于海外；2026 下半年长鑫追涨（事实｜招股书、路透）</td></tr>
+          <tr><td>小米、OPPO、vivo、荣耀</td><td>1.00</td><td>0.90（0.85—1.00）</td><td>0.95（0.90—1.00）</td><td class="l">主要向三星、海力士、美光、铠侠按市场价采购；上半年部分转向长鑫并提前备货（推断）</td></tr>
+          <tr><td>Apple</td><td>0.95</td><td>0.70（0.60—0.85）</td><td>0.90（0.80—1.00）</td><td class="l">只签到 2026 上半年内存长约，长约价约为同期市场价一半（事实｜ZDNet Korea、MacRumors；系数为推断）</td></tr></table>
+        <table class="ptab"><tr><th>全年有效单价（元）</th><th>2025 年</th><th>2026 年</th><th>倍数</th></tr>
+          <tr><td>LPDDR4X／GB</td><td>15.6</td><td>49.4</td><td>3.2 倍</td></tr><tr><td>LPDDR5X／GB</td><td>18.0</td><td>60.2</td><td>3.3 倍</td></tr><tr><td>UFS3.1 256GB／颗</td><td>149.5</td><td>322.4</td><td>2.2 倍</td></tr></table>
+        <p class="ptitle">安卓价格段代表机配置（小米、OPPO、vivo、荣耀共用；两年固定）</p>
+        <table class="ptab"><tr><th>价格段</th><th class="l">代表机型</th><th>内存</th><th>闪存</th><th>其他元件 2025（元）</th></tr>
+          <tr><td>&lt;150 美元</td><td class="l">Redmi A、畅玩、OPPO A 入门</td><td>6GB LP4X</td><td>128GB</td><td>520</td></tr>
+          <tr><td>150—300</td><td class="l">Redmi Note、vivo Y、荣耀 X、OPPO A/K</td><td>8GB（LP5X 约 20%）</td><td>约 220GB</td><td>880</td></tr>
+          <tr><td>300—500</td><td class="l">Redmi Turbo/K、Reno、vivo S、荣耀数字/GT</td><td>12GB（LP5X 约 70%）</td><td>约 290GB</td><td>1,350</td></tr>
+          <tr><td>500—700</td><td class="l">小米数字标准版、iQOO、一加、vivo X 标准版</td><td>12GB LP5X</td><td>约 360GB UFS4</td><td>2,100</td></tr>
+          <tr><td>700—1000</td><td class="l">小米/vivo/OPPO/荣耀 Pro 系列</td><td>13GB LP5X</td><td>约 450GB UFS4</td><td>2,900</td></tr>
+          <tr><td>≥1000</td><td class="l">Ultra、折叠屏</td><td>15GB LP5X</td><td>约 600GB UFS4</td><td>3,700</td></tr></table>
+        <p class="cap">Apple 另设配置：6—9.5GB LPDDR5X、128—380GB 闪存，其他元件 1,500—2,550 元（锚点：iPhone 17 Pro Max 拆机估算整机约 408 美元，其中存储约 42 美元）。华为（含智选）按畅享、nova、Mate/Pura、折叠四个系列的实际配置估算。限制：各家实际采购价、长约、库存未公开，采购系数与库存月数为推断；配置为价格段通用模板，不区分具体机型；2026 年部分机型降配、改配未计入，实际增幅可能更低</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="tab" id="t-hm">
+    <div class="blk full"><h3 id="hm1h"></h3><div id="hm1"></div><p class="cap" id="hm1c"></p></div>
+    <div class="blk"><h3 id="hm2h"></h3><div id="hm2"></div><p class="legend"><span><em data-c="blue" style="background:#1f4e8c"></em>纯血鸿蒙（单框）</span><span><em data-c="mid" style="background:#8fb0d9"></em>Next 双框</span><span><em data-c="blue3" style="background:#c9d8ec"></em>Android／未映射</span></p><p class="cap" id="hm2c"></p></div>
+    <div class="blk"><h3 id="hm3h"></h3><div id="hm3"></div><p class="cap" id="hm3c"></p></div>
+  </section>
+
+  <section class="tab" id="t-gl">
+    <div class="blk"><h3 id="gl1h"></h3><div id="gl1"></div><p class="legend"><span><em data-c="blue" style="background:#1f4e8c"></em>中国大陆</span><span><em data-c="neg" style="background:#b5523b"></em>海外（全球 − 中国）</span></p><p class="cap" id="gl1c"></p></div>
+    <div class="blk"><h3 id="gl2h"></h3><div id="gl2"></div><p class="cap" id="gl2c"></p></div>
+    <div class="blk"><h3 id="gl3h"></h3><div id="gl3"></div><p class="cap" id="gl3c"></p></div>
+    <div class="blk"><h3 id="gl4h"></h3><div id="gl4"></div><p class="cap" id="gl4c"></p></div>
+  </section>
+
+  <section class="tab" id="t-dt">
+    <div class="blk"><h3 id="dt1h">各厂商季度出货</h3><table id="dt1"></table></div>
+    <div class="blk"><h3 id="dt2h">年初至今与全年预估</h3><table id="dt2"></table><p class="cap" id="dt2c"></p></div>
+    <div class="blk"><h3 id="dt3h">各厂商价格段结构与代表机型</h3><table id="dt3"></table></div>
+    <div class="blk"><h3 id="dt4h">纯血鸿蒙主力机型</h3><table id="dt4"></table></div>
+    <div class="blk"><h3 id="dt5h">海外与全球</h3><table id="dt5"></table><p class="cap" id="dt5c"></p></div>
+    <div class="blk"><h3 id="dt6h">最新月</h3><table id="dt6"></table></div>
+    <div class="blk"><h3 id="dt8h">各厂商单台 BOM 估算（元/台）</h3><table id="dt8"></table><p class="cap" id="dt8c"></p></div>
+    <div class="blk"><h3 id="dt7h">出货份额与现有用户份额</h3><table id="dt7"></table><p class="cap" id="dt7c"></p></div>
+  </section>
+
+  <details class="note foot"><summary>来源与口径</summary><div id="foot">
+    来源：IDC（打开时实时读取，随月度更新自动刷新）。口径：中国大陆出货；华为含智选（本页口径，IDC 公开的华为品牌数不含智选，不混算）；OPPO 含 OnePlus、realme；vivo 含 iQOO；低端 &lt;300 美元、中端 300—700 美元、高端 ≥700 美元（IDC 价格段，人民币按 1:7 仅作参考）；海外 = IDC 全球 − 中国大陆（推算）；现有用户份额来自 QuestMobile 活跃设备（公开报告转载），与 IDC 出货不同源，只作方向对比；单台 BOM 为外部公开报价估算，非厂商实际采购价；预估均为估算，非 IDC 预测
+  </div></details>
+</div>
+
+<script src="data_snapshot.js"></script>
+<script>
+(function(){
+  var URL='https://ruoxipei.github.io/idc-dashboard/data/latest.json';
+  var OV_URLS=['https://ruoxipei.github.io/idc-dashboard/data/overseas_2026Q3.json','https://ruoxipei.github.io/idc-dashboard/data/overseas_2026Q2.json'];
+  var IDC_H2_YOY=-0.20;
+  var PUB={period:'26Q3',total:255.3,b:{Samsung:[57.8,-5.8],Apple:[57.3,-4.0],Xiaomi:[30.7,-29.2],OPPO:[25.6,-34.5],vivo:[19.1,-31.5]}};
+  var ACT={m:'2026-09',v:{'Apple':0.2092,'华为':0.2087,'OPPO':0.1824,'vivo':0.1679,'小米':0.1034,'荣耀':0.078},est:{'荣耀':1},
+    jun:{'华为':2.76,'Apple':2.68,'OPPO':2.33,'vivo':2.12,'小米':1.29,'荣耀':1.00},junT:12.82};
+  var BOM={'华为':[2293.5,2812.6,3035.8,3297.0,0.18,0.38,735,0.99],'小米':[1520.7,1904.6,2055.5,2233.4,0.20,0.41,528,0.99,4.3,0.3,-1.75],'OPPO':[1483.7,1875.9,2027.8,2207.1,0.21,0.42,540,0.99,5.8,0.3,-1.75],
+    'vivo':[1457.9,1835.1,1981.9,2155.4,0.21,0.41,519,0.99,5.1,0.3,-1.75],'荣耀':[1398.8,1767.7,1910.2,2078.6,0.21,0.42,507,0.99,5.7,0.3,-1.75],'Apple':[2616.0,2869.4,3101.5,3373.3,0.12,0.25,471,0.97,-8.5,-3.55,-1.75]};
+  var LIGHT={blue:'#1f4e8c',blue2:'#4a78b5',blue3:'#c9d8ec',mid:'#8fb0d9',ink:'#1d2733',sub:'#55606d',mut:'#8a94a0',line:'#d5dbe3',neg:'#b5523b',neg2:'#8f3a26',negl:'#d9a493',bluel:'#8fb0d9',est:'#e7b8a9',dot:'#fff',grey:'#b9c0c8'};
+  var DARK={blue:'#7fb0ea',blue2:'#5f93d3',blue3:'#3b5679',mid:'#4d78ad',ink:'#e3e8ee',sub:'#aeb8c4',mut:'#808b97',line:'#323d4a',neg:'#e58a6f',neg2:'#f0a58f',negl:'#9a5a49',bluel:'#4d6f99',est:'#8a5a4c',dot:'#1a2129',grey:'#5d6773'};
+  var C={};for(var _k in LIGHT)C[_k]=LIGHT[_k];;
+  var BR=['华为','Apple','OPPO','vivo','小米','荣耀'];
+  var LAB={'华为':'华为（含智选）'};
+  function $(i){return document.getElementById(i)}
+  function f0(v){return Math.round(v).toLocaleString('en-US')}
+  function f1(v){return v.toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1})}
+  function pct(v,dg){if(v==null||!isFinite(v))return '—';var t=Math.abs(v*100).toFixed(dg==null?1:dg);if(parseFloat(t)===0)return '0%';return (v>=0?'+':'−')+t+'%'}
+  function cls(v){return v<0?'neg':'pos'}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function nm(s){return String(s).replace('Hi Changxiang','Hi畅享').replace('Changxiang','畅享').replace('畅想','畅享')}
+  function tierOf(t){return (t==='<$150'||t==='$150-300')?'low':((t==='$300-500'||t==='$500-700')?'mid':'high')}
+  function tierP(p){return p<300?'low':(p<700?'mid':'high')}
+  var TN={low:'低端',mid:'中端',high:'高端'};
+
+  function show(t){[].forEach.call(document.querySelectorAll('.tabs button'),function(b){b.classList.toggle('on',b.dataset.t===t)});
+    [].forEach.call(document.querySelectorAll('.tab'),function(s){s.classList.toggle('on',s.id==='t-'+t)});
+    try{history.replaceState(null,'','#'+t)}catch(e){} window.scrollTo(0,0)}
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(b){b.onclick=function(){show(b.dataset.t)}});
+  window.__go=show;
+  var h=(location.hash||'').slice(1); if(h&&$('t-'+h))show(h);
+  window.addEventListener('hashchange',function(){var x=(location.hash||'').slice(1);if(x&&$('t-'+x))show(x)});
+
+  function T(x,y,s,o){o=o||{};return '<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" font-size="'+(o.fs||14)+'" text-anchor="'+(o.a||'middle')+'" fill="'+(o.c||C.ink)+'"'+(o.b?' font-weight="700"':'')+'>'+esc(s)+'</text>'}
+  function R(x,y,w,h,c){return '<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+Math.max(0,w).toFixed(1)+'" height="'+Math.max(0,h).toFixed(1)+'" fill="'+c+'"/>'}
+  function Ln(x1,y1,x2,y2,c,w,dash){return '<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="'+c+'" stroke-width="'+(w||1)+'"'+(dash?' stroke-dasharray="5 4"':'')+'/>'}
+  function svg(W,H,s){return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">'+s+'</svg>'}
+  function hbar(items,o){o=o||{};var W=1000,rh=40,H=items.length*rh+20,lx=170,rx=W-90;
+    var vals=[];items.forEach(function(it){vals.push(it.v);if(it.lo!=null){vals.push(it.lo,it.hi)}});
+    var mn=Math.min(0,Math.min.apply(null,vals)),mx=Math.max(0,Math.max.apply(null,vals));var sp=(mx-mn)||0.1;if(mn<0)mn-=sp*0.28;if(mx>0)mx+=sp*0.28;
+    var X=function(v){return lx+(v-mn)/(mx-mn)*(rx-lx)},x0=X(0),s='';
+    items.forEach(function(it,i){var y=10+i*rh,c=it.grey?C.grey:(it.v<0?C.negl:C.bluel);if(it.hl)c=it.v<0?C.neg2:C.blue;
+      s+=T(lx-12,y+rh/2+5,it.label,{a:'end',fs:15,b:it.hl});
+      var xa=X(Math.min(0,it.v)),xb=X(Math.max(0,it.v));s+=R(xa,y+9,xb-xa,rh-18,c);
+      if(it.lo!=null){s+=Ln(X(it.lo),y+rh/2,X(it.hi),y+rh/2,C.ink,2);s+=Ln(X(it.lo),y+12,X(it.lo),y+rh-12,C.ink,2)+Ln(X(it.hi),y+12,X(it.hi),y+rh-12,C.ink,2)}
+      var tx=it.v<0?Math.min(xa,it.lo!=null?X(it.lo):xa)-8:Math.max(xb,it.hi!=null?X(it.hi):xb)+8;
+      s+=T(tx,y+rh/2+5,it.txt!=null?it.txt:(o.fmt?o.fmt(it.v):pct(it.v)),{a:it.v<0?'end':'start',fs:14,c:it.grey?C.mut:C.ink})});
+    s+=Ln(x0,4,x0,H-6,C.sub,1);return svg(W,H,s)}
+  function vbar(items,o){o=o||{};var W=1000,H=o.h||260,top=30,bot=H-40,n=items.length,gap=(W-40)/n,bw=Math.min(64,gap*0.6);
+    var mn=Math.min(0,Math.min.apply(null,items.map(function(i){return i.v}))),mx=Math.max(0,Math.max.apply(null,items.map(function(i){return i.v})));var r=(mx-mn)||1;mx+=r*0.12;if(mn<0)mn-=r*0.12;
+    var Y=function(v){return top+(mx-v)/(mx-mn)*(bot-top)},y0=Y(0),s='';
+    items.forEach(function(it,i){var x=20+gap*i+(gap-bw)/2,c=it.grey?C.grey:(it.v<0?C.negl:C.bluel);if(it.hl)c=it.v<0?C.neg2:C.blue;
+      var ya=Y(Math.max(0,it.v)),yb=Y(Math.min(0,it.v));s+=R(x,ya,bw,yb-ya,c);
+      s+=T(x+bw/2,it.v<0?yb+17:ya-7,o.fmt?o.fmt(it.v):pct(it.v),{fs:15,b:it.hl});
+      s+=T(x+bw/2,H-12,it.label,{fs:14,c:C.sub})});
+    s+=Ln(10,y0,W-10,y0,C.sub,1);return svg(W,H,s)}
+  function lines(series,labels,o){o=o||{};var W=1000,H=o.h||270,L=50,Rr=series.some(function(s){return s.alt!=null})?W-190:W-30,top=24,bot=H-44,n=labels.length;
+    var all=[];series.forEach(function(s){s.pts.forEach(function(v){if(v!=null)all.push(v)});if(s.alt)all.push(s.alt)});
+    var mn=o.min!=null?o.min:Math.min.apply(null,all),mx=o.max!=null?o.max:Math.max.apply(null,all);if(o.zero){mn=Math.min(mn,0);mx=Math.max(mx,0)}var r=(mx-mn)||1;if(o.min==null)mn-=r*0.1;if(o.max==null)mx+=r*0.15;
+    var X=function(i){return L+(Rr-L)*(n===1?0.5:i/(n-1))},Y=function(v){return top+(mx-v)/(mx-mn)*(bot-top)},s='';
+    if(mn<0&&mx>0)s+=Ln(L,Y(0),Rr,Y(0),C.sub,1)+T(L-8,Y(0)+5,'0%',{a:'end',fs:12,c:C.mut});
+    s+=Ln(L,bot,Rr,bot,C.line,1);
+    labels.forEach(function(l,i){s+=T(X(i),H-18,l,{fs:14,c:C.sub})});
+    series.forEach(function(se){var d='',prev=null;se.pts.forEach(function(v,i){if(v==null)return;d+=(prev==null?'M':'L')+X(i).toFixed(1)+' '+Y(v).toFixed(1)+' ';prev=v});
+      s+='<path d="'+d+'" fill="none" stroke="'+se.c+'" stroke-width="3"/>';
+      se.pts.forEach(function(v,i){if(v==null)return;var last=i===se.pts.length-1;s+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(v).toFixed(1)+'" r="'+(last?6:4)+'" fill="'+se.c+'"/>';
+        if(o.labelAll||last||(i===0&&!o.noFirst))s+=T(X(i),Y(v)+((se.below||(last&&se.alt!=null&&se.alt>v))?22:-12),o.fmt?o.fmt(v):pct(v),{fs:14,c:se.c,b:last})});
+      if(se.alt!=null){var i=se.pts.length-1;s+=Ln(X(i),Y(se.pts[i]),X(i),Y(se.alt),se.c,2,true)+'<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(se.alt).toFixed(1)+'" r="6" fill="'+C.dot+'" stroke="'+se.c+'" stroke-width="2"/>'+T(X(i)+12,Y(se.alt)+5,(o.fmt?o.fmt(se.alt):pct(se.alt))+'（'+se.altTxt+'）',{fs:13,c:se.c,a:'start'})}});
+    return svg(W,H,s)}
+  function dumbbell(items){var W=1000,rh=40,H=items.length*rh+34,lx=170,rx=W-60,X=function(v){return lx+v*(rx-lx)},s='';
+    [0,0.25,0.5,0.75,1].forEach(function(g){s+=Ln(X(g),6,X(g),H-26,C.line,1)+T(X(g),H-8,Math.round(g*100)+'%',{fs:12,c:C.mut})});
+    items.forEach(function(it,i){var y=10+i*rh+rh/2;s+=T(lx-12,y+5,it.label,{a:'end',fs:15});
+      s+=Ln(X(it.a),y,X(it.b),y,C.grey,4)+'<circle cx="'+X(it.a).toFixed(1)+'" cy="'+y+'" r="7" fill="'+C.blue3+'"/><circle cx="'+X(it.b).toFixed(1)+'" cy="'+y+'" r="8" fill="'+C.blue+'"/>';
+      var left=it.b<it.a;s+=T(X(it.b)+(left?-14:14),y+5,Math.round(it.b*100)+'%',{a:left?'end':'start',fs:14,b:true})+T(X(it.a)+(left?14:-14),y+5,Math.round(it.a*100)+'%',{a:left?'start':'end',fs:13,c:C.mut})});
+    return svg(W,H,s)}
+  function pairs(items,max){var W=1000,rh=40,H=items.length*rh+34,lx=170,rx=W-60,X=function(v){return lx+v/max*(rx-lx)},s='';
+    for(var g=0;g<=max+1e-9;g+=0.05)s+=Ln(X(g),6,X(g),H-26,C.line,1)+T(X(g),H-8,Math.round(g*100)+'%',{fs:12,c:C.mut});
+    items.forEach(function(it,i){var y=10+i*rh+rh/2,bc=it.est?C.est:C.neg;s+=T(lx-12,y+5,it.label,{a:'end',fs:15});
+      s+=Ln(X(it.a),y,X(it.b),y,C.grey,4)+'<circle cx="'+X(it.a).toFixed(1)+'" cy="'+y+'" r="8" fill="'+C.blue+'"/><circle cx="'+X(it.b).toFixed(1)+'" cy="'+y+'" r="8" fill="'+bc+'"/>';
+      var bR=it.b>=it.a;s+=T(X(it.b)+(bR?14:-14),y+5,(it.b*100).toFixed(1)+'%'+(it.est?'（推算）':''),{a:bR?'start':'end',fs:14,b:true,c:it.est?C.mut:C.neg})+T(X(it.a)+(bR?-14:14),y+5,(it.a*100).toFixed(1)+'%',{a:bR?'end':'start',fs:13,c:C.blue})});
+    return svg(W,H,s)}
+  function stack0(items){var W=1000,rh=40,H=items.length*rh+70,lx=170,rx=W-110,cols=[C.blue,C.mid,C.neg],nm3=['产品结构','采购价','方法差（华为实配存储更大）'];
+    var mn=0,mx=0;items.forEach(function(it){var p=0,n=0;it.parts.forEach(function(v){if(v>0)p+=v;else n+=v});mx=Math.max(mx,p);mn=Math.min(mn,n)});mn-=2;mx+=2;
+    var X=function(v){return lx+(v-mn)/(mx-mn)*(rx-lx)},s='';
+    items.forEach(function(it,i){var y=10+i*rh,p=0,n=0,tot=0;s+=T(lx-12,y+rh/2+5,it.label,{a:'end',fs:15});
+      it.parts.forEach(function(v,j){tot+=v;var a,b;if(v>=0){a=X(p);b=X(p+v);p+=v}else{b=X(n);a=X(n+v);n+=v}s+=R(a,y+9,b-a,rh-18,cols[j])});
+      s+=T(X(p)+8,y+rh/2+5,'合计 '+(tot>=0?'+':'−')+Math.abs(tot).toFixed(1),{a:'start',fs:14,b:true})});
+    var gy=10+items.length*rh;for(var g=Math.ceil(mn/5)*5;g<=mx;g+=5)s+=T(X(g),gy+16,(g>0?'+':'')+g,{fs:12,c:C.mut});
+    s+=Ln(X(0),4,X(0),gy+2,C.sub,1);
+    nm3.forEach(function(t,j){s+=R(lx+j*170,gy+34,12,12,cols[j])+T(lx+j*170+18,gy+45,t,{a:'start',fs:13,c:C.sub})});
+    return svg(W,H,s)}
+  function stack(items,colors,o){o=o||{};var W=1000,H=o.h||270,top=34,bot=H-40,n=items.length,gap=(W-40)/n,bw=Math.min(64,gap*0.6);
+    var mx=Math.max.apply(null,items.map(function(i){return i.parts.reduce(function(a,b){return a+b},0)}))*1.08,s='';
+    items.forEach(function(it,i){var x=20+gap*i+(gap-bw)/2,acc=0;it.parts.forEach(function(v,j){var h=v/mx*(bot-top);s+=R(x,bot-acc-h,bw,h,colors[j]);acc+=h});
+      if(it.top)s+=T(x+bw/2,bot-acc-8,it.top,{fs:14,b:true,c:C.blue});s+=T(x+bw/2,H-12,it.label,{fs:14,c:C.sub})});
+    s+=Ln(10,bot,W-10,bot,C.sub,1);return svg(W,H,s)}
+
+  var LAST=null;
+  function theme(dk){var P=dk?DARK:LIGHT;for(var k in P)C[k]=P[k];document.body.classList.toggle('dark',dk);
+    $('mode').textContent=dk?'浅色模式':'深色模式';
+    [].forEach.call(document.querySelectorAll('.legend em[data-c]'),function(e){e.style.background=P[e.dataset.c]});
+    try{localStorage.setItem('p15theme',dk?'dark':'light')}catch(e){}
+    if(LAST)render(LAST[0],LAST[1])}
+  $('mode').onclick=function(){theme(!document.body.classList.contains('dark'))};
+  var _t=null;try{_t=localStorage.getItem('p15theme')}catch(e){}
+  if(_t==='dark')theme(true);
+
+  var SNAP=window.IDC_SNAPSHOT||null,SRC='live';
+  function getOV(i){if(i>=OV_URLS.length)return Promise.resolve(SNAP?SNAP.overseas:null);return fetch(OV_URLS[i]+'?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).catch(function(){return getOV(i+1)})}
+  var live=fetch(URL,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
+    .catch(function(e){if(SNAP){SRC='snap';return SNAP.latest}throw e});
+  Promise.all([live,getOV(0)])
+  .then(function(x){LAST=x;render(x[0],x[1]);
+    if(SRC==='snap')$('warn').textContent='IDC 在线数据暂时无法读取，当前显示本地备份（数据期 '+SNAP.latest.meta.period+'，备份于 '+SNAP.savedAt+'）'})
+  .catch(function(e){$('meta').innerHTML='<span class="err">读取 IDC 数据失败（'+esc(e.message)+'），且未找到本地备份文件 data_snapshot.js</span>'});
+
+  function fold(){[].forEach.call(document.querySelectorAll('p.cap'),function(p){if(p.parentNode.tagName==='DETAILS'||(p.textContent||'').length<40)return;
+    var dt=document.createElement('details');dt.className='note';dt.innerHTML='<summary>说明与口径</summary>';p.parentNode.insertBefore(dt,p);dt.appendChild(p)})}
+  function render(d,OV){render0(d,OV);fold()}
+  function render0(d,OV){
+    var meta=d.meta, months=meta.months, g=d.groupMonthly, gt=d.groupMonthlyTier, groups=Object.keys(g), have={};
+    months.forEach(function(m){have[m]=1});
+    function mk(y,i){return y+'-'+(i<10?'0':'')+i}
+    function msOf(y,k){return [0,1,2].map(function(i){return mk(y,3*k-2+i)})}
+    var qs=[];for(var y=2024;y<=2030;y++)for(var k=1;k<=4;k++){var ms=msOf(y,k);if(ms.every(function(m){return have[m]}))qs.push({y:y,k:k,key:y+'Q'+k,lab:String(y).slice(2)+'Q'+k,ms:ms})}
+    function qOf(y,k){return qs.filter(function(q){return q.y===y&&q.k===k})[0]}
+    function vol(b,ms){return ms.reduce(function(s,m){return s+((g[b]||{})[m]||0)},0)/1e4}
+    function tot(ms){return groups.reduce(function(s,b){return s+vol(b,ms)},0)}
+    function mq(x,ms){return ms.reduce(function(s,m){return s+((x.byMonth||{})[m]||0)},0)/1e4}
+    function tiers(b,ms){var o={low:0,mid:0,high:0};ms.forEach(function(m){var x=(gt[b]||{})[m]||{};for(var t in x)o[tierOf(t)]+=x[t]/1e4});return o}
+    function band(t,ms){return ms.reduce(function(s,m){return s+(((d.marketTier[m]||{})[t])||0)},0)/1e4}
+    var L=qs[qs.length-1], LY=qOf(L.y-1,L.k), T0=tot(L.ms), TY=tot(LY.ms), ty=T0/TY-1;
+    var show=qs.filter(function(q){return q.y>=L.y-1});
+    function qy(q){var p=qOf(q.y-1,q.k);return p?tot(q.ms)/tot(p.ms)-1:null}
+    var V=BR.map(function(b){var a=vol(b,L.ms),c=vol(b,LY.ms);return {b:b,a:a,c:c,y:a/c-1,share:a/T0,ta:tiers(b,L.ms),tc:tiers(b,LY.ms)}}).sort(function(x,z){return z.a-x.a});
+    var Vm={};V.forEach(function(v){Vm[v.b]=v});
+    var yr=L.y, lm=months[months.length-1], ln=parseInt(lm.slice(0,4),10)===yr?parseInt(lm.slice(5),10):12;
+    var Ym=[],Pm=[],Rm=[];for(var i=1;i<=ln;i++){Ym.push(mk(yr,i));Pm.push(mk(yr-1,i))}for(var j=ln+1;j<=12;j++)Rm.push(mk(yr-1,j));
+    var list=BR.concat(['其他品牌']),FY={},RA=0;
+    list.forEach(function(b){var q=vol(b,L.ms)/vol(b,LY.ms)-1,r={ytd:vol(b,Ym),yp:vol(b,Pm),fy0:vol(b,Pm.concat(Rm)),ra:vol(b,Rm)*(1+q)};r.yy=r.ytd/r.yp-1;FY[b]=r;RA+=r.ra});
+    var Tytd=tot(Ym),Tyy=Tytd/tot(Pm)-1,Tfy0=tot(Pm.concat(Rm)),k2=null;
+    if(yr===2026&&Rm.length){var h2p=[];for(var m=7;m<=12;m++)h2p.push(mk(yr-1,m));var h2a=Ym.filter(function(x){return parseInt(x.slice(5),10)>=7});k2=(tot(h2p)*(1+IDC_H2_YOY)-tot(h2a))/RA}
+    list.forEach(function(b){var r=FY[b];r.fa=r.ytd+r.ra;r.fb=k2!=null?r.ytd+r.ra*k2:r.fa;r.lo=Math.min(r.fa,r.fb);r.hi=Math.max(r.fa,r.fb)});
+    var TA=Tytd+RA,TB=k2!=null?Tytd+RA*k2:TA,Tlo=Math.min(TA,TB),Thi=Math.max(TA,TB);
+    var MA=tiers? null:null;
+    function mt(ms){var o={low:0,mid:0,high:0};ms.forEach(function(m){var r=d.marketTier[m]||{};for(var t in r)o[tierOf(t)]+=r[t]/1e4});return o}
+    var MTa=mt(L.ms),MTc=mt(LY.ms),dLow=MTa.low-MTc.low,dTot=T0-TY;
+    function asp(ms){var v=0,w=0;d.models.forEach(function(x){if(x.priceUSD){var q=mq(x,ms);v+=q;w+=q*x.priceUSD}});return v?w/v:null}
+    var HM=d.huaweiHM||{},MP=d.hmMap||{};
+    function hs(ms,f){return ms.reduce(function(s,m){return s+(((HM[m]||{})[f])||0)},0)/1e4}
+    var hq=show.filter(function(q){return q.ms.every(function(m){return HM[m]})});
+    var unm=d.models.filter(function(x){return x.group==='华为'&&x.brand==='Huawei'&&!MP[x.model]&&mq(x,L.ms)>=0.5}).map(function(x){return {n:x.model,v:mq(x,L.ms)}}).sort(function(a,b){return b.v-a.v});
+    var unmV=unm.reduce(function(s,x){return s+x.v},0), hpL=hs(L.ms,'pure'),htL=hs(L.ms,'total'),hAdj=(hpL+unmV)/htL;
+    var hwM=d.models.filter(function(x){return x.group==='华为'});
+    var hwOwnA=hwM.filter(function(x){return x.brand==='Huawei'}).reduce(function(s,x){return s+mq(x,L.ms)},0),hwOwnC=hwM.filter(function(x){return x.brand==='Huawei'}).reduce(function(s,x){return s+mq(x,LY.ms)},0);
+    var hwPA=hwM.filter(function(x){return x.brand!=='Huawei'}).reduce(function(s,x){return s+mq(x,L.ms)},0),hwPC=hwM.filter(function(x){return x.brand!=='Huawei'}).reduce(function(s,x){return s+mq(x,LY.ms)},0);
+
+    $('title').textContent=yr+' 年 1—'+ln+' 月中国智能手机出货 '+(Tytd/1e4).toFixed(2)+' 亿台（'+pct(Tyy)+'），'+L.key+' 同比 '+pct(ty);
+    $('meta').textContent='中国大陆｜万台｜IDC 数据期 '+meta.period+'（生成于 '+String(meta.generatedAt||'').slice(0,10)+'）｜'+(SRC==='snap'?'本地备份':'读取于 '+new Date().toLocaleString('zh-CN'))+'';
+
+    var sq=show.map(function(q){return {label:q.lab,v:qy(q),hl:q===L}}).filter(function(x){return x.v!=null});
+    var PQ=qs[qs.length-2],pqy=qy(PQ);
+    $('cn1h').innerHTML='下滑在 '+L.key+' 明显加速：同比由 '+pct(pqy)+' 扩大至 '+pct(ty)+'<span class="tag">季度同比</span>';
+    $('cn1').innerHTML=vbar(sq);
+    $('cn1c').textContent='2025 年有国补托底，同比在 ±4% 内波动；2026 年补贴拉动减弱、存储涨价传导到售价，下半年降幅扩大（事实｜IDC）。IDC 预计 2026H2 中国市场同比约 −20%';
+    $('cn2h').innerHTML='华为（含智选）、Apple 基本稳住，OPPO、vivo、小米、荣耀降约两成<span class="tag">'+L.key+' 各厂商同比</span>';
+    $('cn2').innerHTML=hbar(V.slice().sort(function(a,b){return b.y-a.y}).map(function(v){return {label:LAB[v.b]||v.b,v:v.y,hl:v.b==='华为'}}));
+    $('cn2c').textContent='华为品牌同比 '+pct(hwOwnA/hwOwnC-1)+'，被智选伙伴 '+pct(hwPA/hwPC-1)+' 抵消；Apple 秋季仅发布 Pro 系列（IDC：机型数量减少）。条形按同比排序，份额与出货量见“数据明细”';
+    var fyItems=BR.map(function(b){var r=FY[b];return {label:LAB[b]||b,v:(r.lo+r.hi)/2/r.fy0-1,lo:r.lo/r.fy0-1,hi:r.hi/r.fy0-1,txt:(pct(r.lo/r.fy0-1,0)===pct(r.hi/r.fy0-1,0)?pct(r.lo/r.fy0-1,0):pct(r.lo/r.fy0-1,0)+' ~ '+pct(r.hi/r.fy0-1,0)),hl:b==='华为'}}).sort(function(a,b){return b.v-a.v});
+    var upFY=BR.filter(function(b){return FY[b].lo>FY[b].fy0}).map(function(b){return LAB[b]||b});
+    $('cn3h').innerHTML=yr+' 全年预估：市场 '+pct(Tlo/Tfy0-1,0)+' ~ '+pct(Thi/Tfy0-1,0)+'，'+(upFY.length?'仅 '+upFY.join('、')+' 预计正增长':'头部厂商均预计下滑')+'<span class="tag">全年同比预估区间（估算）</span>';
+    $('cn3').innerHTML=hbar(fyItems);
+    $('cn3c').textContent='区间：A = 剩余月份按 '+L.key+' 同比延续；B = 再按 IDC 2026H2 −20% 预测校准。新机节奏、促销和补贴未单独调整；华为（含智选）若计入 Mate 90、Mate X8 等新品增量，判断约 5,700—5,950 万台（推断）';
+
+    var bands=['<$150','$150-300','$300-500','$500-700','$700-1000','$1000+'],blab={'<$150':'<150 美元','$150-300':'150—300','$300-500':'300—500','$500-700':'500—700','$700-1000':'700—1000','$1000+':'≥1000'};
+    $('pr1h').innerHTML='降幅集中在 300 美元以下：低端段减少 '+f0(-dLow)+' 万台，超过全市场降幅 '+f0(-dTot)+' 万台<span class="tag">'+L.key+' 各价格段同比</span>';
+    $('pr1').innerHTML=vbar(bands.map(function(b){return {label:blab[b],v:band(b,L.ms)/band(b,LY.ms)-1,hl:b==='<$150'||b==='$150-300'}}));
+    $('pr1c').textContent='存储成本同比上涨近 3 倍、占低端机物料成本六成以上，厂商提价或缩减低端机型（事实｜IDC）；≥1000 美元段逆势增长';
+    var db=V.map(function(v){var sa=v.ta.low+v.ta.mid+v.ta.high,sc=v.tc.low+v.tc.mid+v.tc.high;return {label:LAB[v.b]||v.b,a:v.tc.low/sc,b:v.ta.low/sa}}).filter(function(x){return x.a>0.02||x.b>0.02}).sort(function(a,b){return (a.b-a.a)-(b.b-b.a)});
+    var andD=V.filter(function(v){return v.b!=='华为'&&v.b!=='Apple'}).map(function(v){var sa=v.ta.low+v.ta.mid+v.ta.high,sc=v.tc.low+v.tc.mid+v.tc.high;return Math.round((v.tc.low/sc-v.ta.low/sa)*100)});
+    $('pr2h').innerHTML='安卓厂商低端占比普遍下降 '+Math.min.apply(null,andD)+'—'+Math.max.apply(null,andD)+' 个百分点，产品结构被动上移<span class="tag">低端段（&lt;300 美元）占各厂商出货比例</span>';
+    $('pr2').innerHTML=dumbbell(db);
+    $('pr2c').textContent='浅点为 '+LY.key+'，深点为 '+L.key+'；Apple 几乎无低端机型，不列入。各价位代表机型见“数据明细”';
+    var aspQ=show.map(function(q){return asp(q.ms)});
+    $('pr3h').innerHTML='量跌价升：出货加权平均价位由 '+Math.round(aspQ[0])+' 美元升至 '+Math.round(aspQ[aspQ.length-1])+' 美元<span class="tag">季度平均价位（美元）</span>';
+    $('pr3').innerHTML=lines([{c:C.blue,pts:aspQ}],show.map(function(q){return q.lab}),{fmt:function(v){return Math.round(v)},labelAll:true});
+    $('pr3c').textContent='按 IDC 价格段估算，不是真实成交均价；“量跌价升”为 IDC 表述';
+
+    var hsh=hq.map(function(q){return hs(q.ms,'pure')/hs(q.ms,'total')});
+    var hLYq=qOf(L.y-1,L.k),hLY=hs(hLYq.ms,'pure')/hs(hLYq.ms,'total');
+    $('hm1h').innerHTML='纯血鸿蒙占华为出货由 '+Math.round(hLY*100)+'% 升至约 '+Math.round(hAdj*100)+'%，迁移基本完成<span class="tag">纯血鸿蒙（单框）占华为（含智选）出货</span>';
+    $('hm1').innerHTML=lines([{c:C.blue,pts:hsh,alt:unmV>=1?hAdj:null,altTxt:'含未映射新机'}],hq.map(function(q){return q.lab}),{min:0,max:1.08,fmt:function(v){return Math.round(v*100)+'%'},labelAll:true});
+    $('hm1c').textContent=unmV>=1?(L.key+' 实线点为现有映射口径（'+Math.round(hpL/htL*100)+'%）；'+unm.length+' 款华为新机（'+unm.slice(0,3).map(function(x){return x.n}).join('、')+' 等，'+f0(unmV)+' 万台）尚未映射、被计入 Android，空心点为计入后比例（推断）'):'按机型映射口径';
+    $('hm2h').innerHTML='Next 双框基本退出：由 '+f0(hs(hq[0].ms,'oldHM'))+' 万台降至 '+f0(hs(L.ms,'oldHM'))+' 万台<span class="tag">华为（含智选）季度出货构成（万台）</span>';
+    $('hm2').innerHTML=stack(hq.map(function(q){return {label:q.lab,parts:[hs(q.ms,'pure'),hs(q.ms,'oldHM'),hs(q.ms,'android')]}}),[C.blue,C.mid,C.blue3]);
+    $('hm2c').textContent='出货口径，不等于鸿蒙系统新增用户或纯新增用户；智选伙伴计入 Android';
+    var pm=d.models.filter(function(x){return x.group==='华为'&&MP[x.model]&&MP[x.model].isPure&&x.priceUSD!=null});var pt={low:0,mid:0,high:0};pm.forEach(function(x){pt[tierP(x.priceUSD)]+=mq(x,L.ms)});var ptt=pt.low+pt.mid+pt.high;
+    $('hm3h').innerHTML='纯血鸿蒙已覆盖低中高端，中端为主力<span class="tag">'+L.key+' 纯血鸿蒙出货价格段构成</span>';
+    $('hm3').innerHTML=hbar(['low','mid','high'].map(function(k){return {label:TN[k],v:pt[k]/ptt,txt:Math.round(pt[k]/ptt*100)+'%',hl:k==='mid'}}),{});
+    var top3=pm.map(function(x){return {n:x.model,v:mq(x,L.ms)}}).sort(function(a,b){return b.v-a.v}).slice(0,3);
+    $('hm3c').textContent='主力机型：'+top3.map(function(x){return nm(x.n)+' '+f0(x.v)+' 万'}).join('、')+'；完整前 10 见“数据明细”';
+
+    var GLOBAL=null;
+    if(OV){
+      var B=['Samsung','Apple','Xiaomi','OPPO','vivo','Transsion','Honor','Huawei'],CN={'Huawei':'华为','Apple':'Apple','OPPO':'OPPO','vivo':'vivo','Xiaomi':'小米','Honor':'荣耀'};
+      var NM={'Huawei':'华为（含智选）','Apple':'Apple','OPPO':'OPPO','vivo':'vivo','Xiaomi':'小米','Honor':'荣耀','Samsung':'三星','Transsion':'传音'};
+      var GQ=OV.globalQuarterly,BQ=OV.brandQuarterly,BC=OV.brandChinaQuarterly,ST=OV.brandQuarterlyStatus||{};
+      function qk(y,k){return String(y).slice(2)+'Q'+k}
+      function chinaQ(b,key){if(BC[b]&&BC[b][key]!=null)return BC[b][key];var y=2000+parseInt(key.slice(0,2),10),k=parseInt(key.slice(3),10);if(CN[b])return vol(CN[b],msOf(y,k))/100;var ks=Object.keys(BC[b]||{});return ks.length?BC[b][ks[ks.length-1]]:0}
+      var cur=qk(L.y,L.k),prv=qk(L.y-1,L.k),q4p=qk(L.y-1,4),hasCur=!!GQ[cur],O={};
+      B.forEach(function(b){var o={},src={},f=1;Object.keys(BQ[b]||{}).forEach(function(q){o[q]=BQ[b][q]-chinaQ(b,q);src[q]=(ST[b]||{})[q]||''});
+        if(!hasCur){if(PUB.b[b]){var gv=PUB.b[b][0],gp=gv/(1+PUB.b[b][1]/100);o[cur]=gv-chinaQ(b,cur);src[cur]='IDC 初值';f=gp/BQ[b][prv];o[prv]=gp-chinaQ(b,prv)}else{var ks=Object.keys(o);o[cur]=o[ks[ks.length-1]];src[cur]='假设'}}
+        o[q4p]=(BQ[b][q4p]||0)*((ST[b]||{})[q4p]==='IDC_OLD_SCOPE'?f:1)-chinaQ(b,q4p);O[b]={o:o,src:src,yy:o[cur]/o[prv]-1}});
+      var TQ={};Object.keys(GQ).forEach(function(q){TQ[q]=GQ[q].total-GQ[q].china});if(!hasCur)TQ[cur]=PUB.total-T0/100;
+      var tqy=TQ[cur]/TQ[prv]-1;
+      function ov25(b){return [1,2,3,4].reduce(function(s,k){return s+(O[b].o[qk(yr-1,k)]||0)},0)}
+      function ovFY(b){var s=0;[1,2,3,4].forEach(function(k){var q=qk(yr,k);if(k<=L.k)s+=O[b].o[q]||0;else s+=(O[b].o[qk(yr-1,k)]||0)*(1+O[b].yy)});return s}
+      var hwLo=ov25('Huawei'),hwHi=ovFY('Huawei');
+      var gq=show.map(function(q){var a=qk(q.y,q.k),p=qk(q.y-1,q.k);return {lab:q.lab,cn:qy(q),ov:TQ[a]!=null&&TQ[p]!=null?TQ[a]/TQ[p]-1:null}});
+      $('gl1h').innerHTML='海外降幅更深：'+L.key+' 海外同比 '+pct(tqy)+'，中国大陆 '+pct(ty)+'<span class="tag">季度同比</span>';
+      $('gl1').innerHTML=lines([{c:C.blue,pts:gq.map(function(x){return x.cn})},{c:C.neg,pts:gq.map(function(x){return x.ov}),below:true}],gq.map(function(x){return x.lab}),{zero:true,labelAll:false,noFirst:true});
+      $('gl1c').textContent='海外 = IDC 全球 − 中国大陆（推算）；'+L.key+' 海外约 '+f0(TQ[cur]*100)+' 万台。IDC：多个新兴市场手机售价上涨 40%—50%';
+      var ob=['Samsung','Apple','Xiaomi','OPPO','vivo','Transsion','Honor'].map(function(b){var est=/ESTIMATE|DERIVED|假设/.test(O[b].src[cur]||'')||b==='Honor'||b==='Transsion';return {label:NM[b],v:O[b].yy,grey:est,txt:pct(O[b].yy,0)+(est?'（估算）':'')}}).sort(function(a,b){return b.v-a.v});
+      $('gl2h').innerHTML='海外同样分化：三星、Apple 基本持平，小米、vivo、OPPO 降三成以上<span class="tag">'+L.key+' 海外出货同比</span>';
+      $('gl2').innerHTML=hbar(ob);
+      $('gl2c').textContent='灰色为未公布或按上季持平假设的估算值，仅供参考；OPPO 同比按 IDC 重列口径（含 realme）；华为海外基数为估算，不列入';
+      var R=OV.regionQuarterlyTotal,rk=Object.keys(R),lq=Object.keys(R[rk[0]]).sort().pop(),pq=(parseInt(lq.slice(0,2),10)-1)+lq.slice(2);
+      var ri=rk.map(function(r){return {label:r,v:R[r][lq]/R[r][pq]-1}}).sort(function(a,b){return b.v-a.v});
+      $('gl3h').innerHTML='新兴市场跌幅最大，北美、日本小幅增长<span class="tag">'+lq+' 分区域出货同比（最新可得）</span>';
+      $('gl3').innerHTML=hbar(ri);
+      $('gl3c').textContent='区域数据目前只到 '+lq+'；区域划分以 IDC 为准';
+      var GB=['Huawei','Apple','Samsung','Xiaomi','OPPO','vivo','Honor','Transsion'];GLOBAL=[];
+      GB.forEach(function(b){var c25,clo,chi;if(CN[b]){var r=FY[CN[b]];c25=r.fy0;clo=r.lo;chi=r.hi}else{c25=[1,2,3,4].reduce(function(s,k){return s+chinaQ(b,qk(yr-1,k))},0)*100;clo=chi=c25*(1+Tyy)}
+        var o25=ov25(b)*100,olo=(b==='Huawei'?hwLo:ovFY(b))*100,ohi=(b==='Huawei'?hwHi:ovFY(b))*100,g25=c25+o25,lo=clo+olo,hi=chi+ohi;
+        GLOBAL.push({b:b,label:NM[b],g25:g25,clo:clo,chi:chi,olo:olo,ohi:ohi,lo:lo,hi:hi,est:(b==='Huawei'||b==='Honor'||b==='Transsion')})});
+      var hwG=GLOBAL[0];
+      $('gl4h').innerHTML=yr+' 全球全年预估：Apple 小幅增长，小米、OPPO、vivo、传音降两到三成<span class="tag">全球出货同比预估区间（估算）</span>';
+      $('gl4').innerHTML=hbar(GLOBAL.map(function(x){return {label:x.label,v:(x.lo+x.hi)/2/x.g25-1,lo:x.lo/x.g25-1,hi:x.hi/x.g25-1,grey:x.est,txt:(pct(x.lo/x.g25-1,0)===pct(x.hi/x.g25-1,0)?pct(x.lo/x.g25-1,0):pct(x.lo/x.g25-1,0)+' ~ '+pct(x.hi/x.g25-1,0)),hl:x.b==='Huawei'}}).sort(function(a,b){return b.v-a.v}));
+      $('gl4c').textContent='全球 = 中国预估 + 海外预估。灰色为海外基数是估算的厂商（荣耀、传音、华为），可信度较低；华为（含智选）全球约 '+f0(hwG.lo)+'—'+f0(hwG.hi)+' 万台，区间主要来自海外推算的不确定性';
+      var t5='<tr><th>厂商</th><th>'+L.key+' 海外</th><th>同比</th><th>'+(yr-1)+' 全球</th><th>'+yr+' 中国预估</th><th>'+yr+' 海外预估</th><th>'+yr+' 全球预估</th><th class="l">数据状态</th></tr>';
+      GLOBAL.forEach(function(x){var b=x.b,o=O[b];t5+='<tr><td>'+esc(x.label)+'</td><td>'+f0(o.o[cur]*100)+'</td><td class="'+cls(o.yy)+'">'+pct(o.yy)+'</td><td>'+f0(x.g25)+'</td><td>'+f0(x.clo)+(x.chi-x.clo>=1?'—'+f0(x.chi):'')+'</td><td>'+f0(x.olo)+(x.ohi-x.olo>=1?'—'+f0(x.ohi):'')+'</td><td><b>'+f0(x.lo)+(x.hi-x.lo>=1?'—'+f0(x.hi):'')+'</b></td><td class="l src">'+esc((o.src[cur]||'').replace('IDC_YOY_DERIVED','由同比推算').replace('IDC_PRELIM','IDC 初值').replace('IDC_FINAL','IDC').replace('ESTIMATE','估算'))+'</td></tr>'});
+      $('dt5').innerHTML=t5;$('dt5c').textContent='单位万台。海外 = IDC 全球 − 中国大陆；'+L.key+' 三星、Apple、小米、OPPO、vivo 全球数为 IDC 初值（公开报道，人工补录）；传音、荣耀、华为按上季持平假设';
+    } else {$('gl1h').textContent='未读取到海外数据'}
+
+    var SH=BR.map(function(b){return {b:b,label:LAB[b]||b,a:FY[b].ytd/Tytd,c:vol(b,months)/tot(months),b2:ACT.v[b],est:!!ACT.est[b]}}).map(function(x){x.gap=x.b2-x.a;return x}).sort(function(x,z){return z.b2-x.b2});
+    var upS=SH.filter(function(x){return x.gap>=0.01&&!x.est}).map(function(x){return x.label}),dnS=SH.filter(function(x){return x.gap<=-0.01}).map(function(x){return x.label});
+    $('cn4h').innerHTML=(upS.length?upS.join('、')+' 用户存量份额高于出货份额':'')+(dnS.length?'；'+dnS.join('、')+'出货份额高于存量，用户盘仍在扩大':'')+'<span class="tag">出货份额 vs 活跃设备份额</span>';
+    $('cn4').innerHTML=pairs(SH.map(function(x){return {label:x.label,a:x.a,b:x.b2,est:x.est}}),0.3);
+    $('cn4c').textContent='出货份额 = IDC '+yr+' 年 1—'+ln+' 月累计；活跃设备份额 = QuestMobile '+ACT.m.replace('-','年')+'月（公开报告，媒体转载），口径为月度活跃设备，分母为智能终端整体。两者来源、分母不同，只看方向，不做加减。荣耀 9 月未公开，用 6 月数推算；荣耀活跃份额偏低、华为偏高，可能与 2020 年前荣耀机型计入华为有关（推断）。存量推算见“数据明细”';
+
+    var BB=BR.map(function(b){var r=BOM[b];return {b:b,label:LAB[b]||b,m:r[2]/r[0]-1,lo:r[1]/r[0]-1,hi:r[3]/r[0]-1,r:r}});
+    var andB=BB.filter(function(x){return x.b!=='华为'&&x.b!=='Apple'}).map(function(x){return Math.round(x.m*100)});
+    $('co1h').innerHTML='国产安卓单台 BOM 上涨约 '+Math.min.apply(null,andB)+'%—'+Math.max.apply(null,andB)+'%，比华为（含智选）+'+Math.round(BOM['华为'][2]/BOM['华为'][0]*100-100)+'% 略高；Apple 约 +'+Math.round(BOM['Apple'][2]/BOM['Apple'][0]*100-100)+'%<span class="tag">2026 vs 2025 全年单台 BOM 涨幅（中情景，线为低—高情景）</span>';
+    $('co1').innerHTML=hbar(BB.slice().sort(function(a,b){return b.m-a.m}).map(function(x){return {label:x.label,v:x.m,lo:x.lo,hi:x.hi,txt:pct(x.m,0)+'（'+pct(x.lo,0)+' ~ '+pct(x.hi,0)+'）',hl:x.b==='华为'}}));
+    $('co1c').textContent='估算，非厂商采购价，计算方法见本页最后一块。'+L.key+' 出货同比：OPPO、vivo、小米、荣耀约 '+pct(Math.max.apply(null,['OPPO','vivo','小米','荣耀'].map(function(b){return Vm[b].y})),0)+' ~ '+pct(Math.min.apply(null,['OPPO','vivo','小米','荣耀'].map(function(b){return Vm[b].y})),0)+'，Apple '+pct(Vm['Apple'].y,0);
+    $('co2h').innerHTML='涨幅约 97%—99% 来自存储：安卓厂商存储占 BOM 由约 20% 升至约 41%<span class="tag">内存 + 闪存占单台 BOM 比例</span>';
+    $('co2').innerHTML=dumbbell(BB.slice().sort(function(a,b){return b.r[5]-a.r[5]}).map(function(x){return {label:x.label,a:x.r[4],b:x.r[5]}}));
+    $('co2c').textContent='按季度合约价逐月折算，2026 全年内存有效单价约为 2025 年的 3.4 倍、闪存约 2.2 倍（计算）。其他零件按同规格价格分项调价：屏幕降价，芯片、电池、PCB、电容涨价，合计约 0%—2%。存储对涨幅贡献：安卓约 99%，Apple 约 97%，华为（含智选）约 99%';
+    var cmp=['OPPO','荣耀','vivo','小米','Apple'];
+    $('co3h').innerHTML='国产安卓比华为（含智选）高 3—4 个百分点，主因低端机多、存储占成本比重高；Apple 低约 14 个百分点<span class="tag">相对华为涨幅差拆分（个百分点，中情景）</span>';
+    $('co3').innerHTML=stack0(cmp.map(function(b){var r=BOM[b];return {label:LAB[b]||b,parts:[r[8],r[9],r[10]]}}));
+    $('co3c').textContent='拆分方法：把各厂商换成华为的采购系数重算，得到“产品结构”差异；与本家结果相减，得到“采购价”差异；华为用通用模板与用实际配置的差，即“方法差”。产品结构：国产安卓 300 美元以下占 54%—65%，8GB 机型以 LPDDR4X 为主（2026 年有效价约 3.2 倍），存储占比高。采购价：安卓 2025 年按市场价，华为有长鑫/长江折扣，差异约 0.3 个百分点。方法差：华为按系列实配估算、旗舰与折叠存储更大，其他厂商用通用配置模板，同模板套华为会低估约 1.7 个百分点，抵消一部分结构差，最终国产安卓比华为高 3—4 个百分点。Apple：存储只占成本约 12%，高端占比约九成、其他零件贵，2026 上半年还有内存长约。配置模板与采购系数为推断';
+
+    var k=[
+      {l:yr+' 年 1—'+ln+' 月累计',v:(Tytd/1e4).toFixed(2)+' 亿台',d:'同比 '+pct(Tyy),dc:cls(Tyy)},
+      {l:L.key+' 单季',v:f0(T0)+' 万台',d:'同比 '+pct(ty),dc:cls(ty)},
+      {l:yr+' 全年预估（估算）',v:(Tlo/1e4).toFixed(2)+'—'+(Thi/1e4).toFixed(2)+' 亿台',d:'同比 '+pct(Tlo/Tfy0-1,0)+' ~ '+pct(Thi/Tfy0-1,0),dc:'neg'},
+      {l:'纯血鸿蒙占华为（'+L.key+'）',v:'约 '+Math.round(hAdj*100)+'%',d:unmV>=1?'含未映射新机（推断）':'按机型映射',dc:'src'}];
+    $('kpis').innerHTML=k.map(function(x){return '<div class="kpi"><div class="l">'+esc(x.l)+'</div><div class="v">'+esc(x.v)+'</div><div class="d '+x.dc+'">'+esc(x.d)+'</div></div>'}).join('');
+    function hl(id){var n=$(id).firstChild;return n?n.textContent:''}
+    var st=[['cn',hl('cn1h')],['pr',hl('pr1h')],['cn',hl('cn2h')],['hm',hl('hm1h')]];
+    if(OV)st.push(['gl',hl('gl1h')]);
+    st.push(['cn',hl('cn3h')]);
+    $('story').innerHTML=st.map(function(x){return '<li><span style="flex:1">'+esc(x[1])+'</span><a onclick="__go(\''+x[0]+'\')">看图</a></li>'}).join('');
+
+    var t1='<tr><th>厂商</th>'+show.map(function(q){return '<th>'+q.lab+'</th>'}).join('')+'<th>'+L.key+' 同比</th><th>份额</th></tr>';
+    V.concat([{b:'其他品牌'}]).forEach(function(v){t1+='<tr><td>'+esc(LAB[v.b]||v.b)+'</td>'+show.map(function(q){return '<td>'+f0(vol(v.b,q.ms))+'</td>'}).join('')+'<td class="'+cls(vol(v.b,L.ms)/vol(v.b,LY.ms)-1)+'">'+pct(vol(v.b,L.ms)/vol(v.b,LY.ms)-1)+'</td><td>'+(vol(v.b,L.ms)/T0*100).toFixed(1)+'%</td></tr>'});
+    t1+='<tr style="font-weight:700"><td>全市场</td>'+show.map(function(q){return '<td>'+f0(tot(q.ms))+'</td>'}).join('')+'<td class="neg">'+pct(ty)+'</td><td>100%</td></tr>';
+    $('dt1').innerHTML=t1;$('dt1h').textContent='各厂商季度出货（万台）';
+    var t2='<tr><th>厂商</th><th>1—'+ln+' 月累计</th><th>累计同比</th><th>累计份额</th><th>'+(yr-1)+' 全年</th><th>'+yr+' 预估 A</th><th>预估 B</th></tr>';
+    list.forEach(function(b){var r=FY[b];t2+='<tr><td>'+esc(LAB[b]||b)+'</td><td>'+f0(r.ytd)+'</td><td class="'+cls(r.yy)+'">'+pct(r.yy)+'</td><td>'+(r.ytd/Tytd*100).toFixed(1)+'%</td><td>'+f0(r.fy0)+'</td><td>'+f0(r.fa)+'（'+pct(r.fa/r.fy0-1)+'）</td><td>'+f0(r.fb)+'（'+pct(r.fb/r.fy0-1)+'）</td></tr>'});
+    t2+='<tr style="font-weight:700"><td>全市场</td><td>'+f0(Tytd)+'</td><td class="neg">'+pct(Tyy)+'</td><td>100%</td><td>'+f0(Tfy0)+'</td><td>'+f0(TA)+'（'+pct(TA/Tfy0-1)+'）</td><td>'+f0(TB)+'（'+pct(TB/Tfy0-1)+'）</td></tr>';
+    $('dt2').innerHTML=t2;$('dt2h').textContent=yr+' 年 1—'+ln+' 月累计与全年预估（万台）';
+    $('dt2c').textContent='预估 A：剩余月份按 '+L.key+' 同比延续；预估 B：再按 IDC 2026H2 −20% 预测校准（剩余月份整体下调 '+(k2!=null?Math.round((1-k2)*100):0)+'%）';
+    var MAIN={'华为':'Huawei','Apple':'Apple','OPPO':'OPPO','vivo':'vivo','小米':'Xiaomi','荣耀':'Honor'};
+    var t3='<tr><th>厂商</th><th>低/中/高端占比（'+L.key+'）</th><th>去年同季</th><th class="l">高端代表</th><th class="l">中端代表</th><th class="l">低端代表</th></tr>';
+    V.forEach(function(v){var sa=v.ta.low+v.ta.mid+v.ta.high,sc=v.tc.low+v.tc.mid+v.tc.high,rp={low:[],mid:[],high:[]};
+      d.models.forEach(function(x){if(x.group===v.b&&x.priceUSD!=null){var q=mq(x,L.ms);if(q>0.5)rp[tierP(x.priceUSD)].push({n:nm((x.brand&&x.brand!==MAIN[v.b]?x.brand+' ':'')+x.model),q:q})}});
+      function top2(k){return rp[k].sort(function(a,b){return b.q-a.q}).slice(0,2).map(function(x){return esc(x.n)+' '+f0(x.q)+'万'}).join('；')||'—'}
+      function sh(t,s){return Math.round(t.low/s*100)+'/'+Math.round(t.mid/s*100)+'/'+Math.round(t.high/s*100)+'%'}
+      t3+='<tr><td>'+esc(LAB[v.b]||v.b)+'</td><td>'+sh(v.ta,sa)+'</td><td>'+sh(v.tc,sc)+'</td><td class="l">'+top2('high')+'</td><td class="l">'+top2('mid')+'</td><td class="l">'+top2('low')+'</td></tr>'});
+    $('dt3').innerHTML=t3;
+    var t4='<tr><th>机型</th><th class="l">系列</th><th>价格段</th><th>'+L.key+' 出货（万台）</th><th>占纯血鸿蒙</th></tr>';
+    pm.map(function(x){return {n:x.model,s:MP[x.model].series,p:x.priceUSD,v:mq(x,L.ms)}}).sort(function(a,b){return b.v-a.v}).slice(0,10).forEach(function(x){t4+='<tr><td>'+esc(nm(x.n))+'</td><td class="l">'+esc(nm(x.s))+'</td><td>'+TN[tierP(x.p)]+'</td><td>'+f1(x.v)+'</td><td>'+(x.v/hpL*100).toFixed(1)+'%</td></tr>'});
+    $('dt4').innerHTML=t4;$('dt4h').textContent='纯血鸿蒙主力机型（'+L.key+'，前 10）';
+    var pmn=months[months.length-2],ymn=(parseInt(lm.slice(0,4),10)-1)+lm.slice(4);
+    function mv(b,m){return ((g[b]||{})[m]||0)/1e4}var MT=groups.reduce(function(s,b){return s+mv(b,lm)},0);
+    var t6='<tr><th>厂商</th><th>出货（万台）</th><th>份额</th><th>同比</th><th>环比</th></tr>';
+    groups.slice().sort(function(a,b){return mv(b,lm)-mv(a,lm)}).forEach(function(b){var v=mv(b,lm),yy=v/mv(b,ymn)-1,mm=v/mv(b,pmn)-1;t6+='<tr><td>'+esc(LAB[b]||b)+'</td><td>'+f1(v)+'</td><td>'+(v/MT*100).toFixed(1)+'%</td><td class="'+cls(yy)+'">'+pct(yy)+'</td><td class="'+cls(mm)+'">'+pct(mm)+'</td></tr>'});
+    $('dt6').innerHTML=t6;$('dt6h').textContent='最新月（'+lm.replace('-','年')+'月）';
+    var t7='<tr><th>厂商</th><th>'+yr+' 年 1—'+ln+' 月出货份额</th><th>'+months[0].slice(0,4)+'.'+months[0].slice(5)+'—'+lm.slice(0,4)+'.'+lm.slice(5)+' 累计出货份额（推算存量）</th><th>活跃设备份额 '+ACT.m+'</th><th>活跃设备 2026-06（亿台）</th><th>活跃 − 出货</th></tr>';
+    SH.forEach(function(x){t7+='<tr><td>'+esc(x.label)+'</td><td>'+(x.a*100).toFixed(1)+'%</td><td class="src">'+(x.c*100).toFixed(1)+'%</td><td>'+(x.b2*100).toFixed(1)+'%'+(x.est?'（推算）':'')+'</td><td>'+ACT.jun[x.b].toFixed(2)+'</td><td class="'+cls(x.gap)+'">'+(x.gap>=0?'+':'−')+Math.abs(x.gap*100).toFixed(1)+' 个百分点</td></tr>'});
+    $('dt7').innerHTML=t7;
+    var t8='<tr><th>厂商</th><th>2025 年</th><th>2026 年 低 / 中 / 高</th><th>涨幅（中）</th><th>存储占比 25→26</th><th>存储增量</th><th>存储贡献</th></tr>';
+    BB.slice().sort(function(a,b){return b.m-a.m}).forEach(function(x){var r=x.r;t8+='<tr><td>'+esc(x.label)+'</td><td>'+f0(r[0])+'</td><td>'+f0(r[1])+' / <b>'+f0(r[2])+'</b> / '+f0(r[3])+'</td><td>'+pct(x.m)+'</td><td>'+Math.round(r[4]*100)+'% → '+Math.round(r[5]*100)+'%</td><td>'+f0(r[6])+'</td><td>'+Math.round(r[7]*100)+'%</td></tr>'});
+    $('dt8').innerHTML=t8;
+    $('dt8c').textContent='外部公开报价估算，非厂商实际采购价（2026-11-12）：华为（含智选）按系列四档（书本折叠内外屏按行业折叠面板报价）；其他厂商按 IDC 价格段六档与通用配置模板。含零件和组装，不含渠道、物流、质保、研发；两年固定配置，不计升级和降配；2026 年第四季度存储价为预测；各家实际采购价、长约、库存未公开，采购系数与库存月数为推断。2026 年按 1—9 月价格段结构算的参考值不引用：涨价会把同一机型推到更高价格段';
+    $('dt7c').textContent='事实：活跃设备份额与 6 月台数来自 QuestMobile 2026 年智能手机市场研究报告、秋季大报告（媒体转载，未见原文）；6 月总量 12.82 亿台为移动互联网终端整体，品牌口径（是否含智选、一加、realme、iQOO）未公开。推算：荣耀 9 月 = 6 月 1.00 ÷ 12.82；“累计出货份额”用 IDC 可得的 '+months.length+' 个月出货代表在用存量，原因是行业平均换机周期约 3—4 年，近 3 年出货基本仍在使用，但缺 2024 年前出货、未扣除报废和二手流转，只作方向参考';
+  }
+})();
+</script>
+</body>
+</html>
